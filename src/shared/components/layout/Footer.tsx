@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { NAV_LINKS, SOCIAL_LINKS } from '@/shared/constants';
 
@@ -67,30 +68,36 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-export const Footer = () => (
-  <motion.footer
-    initial={{ opacity: 0 }}
-    whileInView={{ opacity: 1 }}
-    viewport={{ once: true, margin: '-80px' }}
-    transition={{ duration: 0.4 }}
-    className="border-t border-gray-200/80 bg-linear-to-b from-[#f9fafb] to-[#f3f4f6]"
-  >
-    <div className="container-custom pt-16 pb-0">
-      <motion.div
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-60px' }}
-        className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-12"
-      >
-        {/* Brand */}
-        <motion.div variants={item} className="md:col-span-1">
-          <Link
-            href="#home"
-            className="inline-block text-2xl font-bold tracking-tight bg-linear-to-r from-primary-dark to-primary bg-clip-text text-transparent transition-opacity hover:opacity-90"
-          >
-            NDQ
-          </Link>
+export const Footer = () => {
+  // Logo link: always go to homepage root
+  const getLogoHref = () => {
+    return '/';
+  };
+
+  return (
+    <motion.footer
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.4 }}
+      className="border-t border-gray-200/80 bg-linear-to-b from-[#f9fafb] to-[#f3f4f6]"
+    >
+      <div className="container-custom pt-16 pb-0">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-60px' }}
+          className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-12"
+        >
+          {/* Brand */}
+          <motion.div variants={item} className="md:col-span-1">
+            <Link
+              href={getLogoHref()}
+              className="inline-block text-2xl font-bold tracking-tight bg-linear-to-r from-primary-dark to-primary bg-clip-text text-transparent transition-opacity hover:opacity-90"
+            >
+              NDQ
+            </Link>
           <p className="mt-2 text-lg font-semibold text-gray-900">Nguyen Dang Quang</p>
           <p className="mt-2 text-sm text-gray-500">Mobile Engineer</p>
           <p className="mt-2 max-w-xs text-sm leading-relaxed text-gray-600">
@@ -133,4 +140,5 @@ export const Footer = () => (
       </div>
     </div>
   </motion.footer>
-);
+  );
+};

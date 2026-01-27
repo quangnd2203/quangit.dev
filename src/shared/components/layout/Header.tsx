@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Navigation } from './Navigation';
 import { SECTION_IDS } from '@/shared/constants';
@@ -9,6 +10,13 @@ import { cn } from '@/shared/utils/cn';
 
 export const Header = () => {
   const scrolled = useScrollPosition(20);
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith('/admin') || pathname === '/login';
+
+  // Logo link: always go to homepage root
+  const getLogoHref = () => {
+    return '/';
+  };
 
   return (
     <motion.header
@@ -24,7 +32,7 @@ export const Header = () => {
     >
       <div className="container-custom h-14 md:h-16 flex items-center justify-between">
         <Link
-          href={`#${SECTION_IDS.home}`}
+          href={getLogoHref()}
           className={cn(
             'text-xl font-bold tracking-tight transition-all duration-300',
             'bg-linear-to-r from-primary-dark to-primary bg-clip-text text-transparent',

@@ -15,7 +15,7 @@ export const Navigation = () => {
     <nav className="flex items-center gap-8">
       <div className="hidden md:flex items-center gap-4">
         {NAV_LINKS.map(({ label, href }) => {
-          const sectionId = href.slice(1);
+          const sectionId = href.slice(1); // Remove leading /
           const isActive = activeId === sectionId;
           return (
             <Link
@@ -86,7 +86,7 @@ export const Navigation = () => {
           >
             <div className="container-custom py-4 flex flex-col gap-1">
               {NAV_LINKS.map(({ label, href }) => {
-                const sectionId = href.slice(1);
+                const sectionId = href.slice(1); // Remove leading /
                 const isActive = activeId === sectionId;
                 return (
                   <Link
