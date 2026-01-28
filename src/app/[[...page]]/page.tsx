@@ -7,6 +7,7 @@ import { SkillsSection } from '@/features/skills';
 import { ExperienceSection } from '@/features/experience';
 import { ProjectsSection } from '@/features/projects';
 import { ContactSection } from '@/features/contact';
+import { Header, Footer } from '@/shared/components/layout';
 import NotFound from '../not-found';
 import { SECTION_IDS } from '@/shared/constants';
 
@@ -33,13 +34,17 @@ const CatchAllPage = () => {
   }, [target]);
 
   return (
-    <main className="min-h-screen">
-      <HomeSection />
-      <SkillsSection />
-      <ExperienceSection />
-      <ProjectsSection />
-      <ContactSection />
-    </main>
+    <>
+      <Header />
+      <main className="min-h-screen">
+        <HomeSection />
+        <SkillsSection />
+        <ExperienceSection />
+        <ProjectsSection />
+        <ContactSection />
+      </main>
+      <Footer />
+    </>
   );
 };
 

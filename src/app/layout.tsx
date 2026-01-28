@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Header, Footer } from '@/shared/components/layout';
 import { Inter } from "next/font/google";
 
 
@@ -35,9 +34,7 @@ const inter = Inter({
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
   <html lang="en">
     <body className={`${inter.variable} antialiased`}>
-      <Header />
       {children}
-      <Footer />
     </body>
   </html>
 );

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useContactMessagesAdmin } from '../hooks/useContactMessagesAdmin';
 import { ContactMessage } from '@/core/entities/ContactMessage';
@@ -116,6 +117,7 @@ const MessageCard = ({
 };
 
 export const ContactMessagesList = () => {
+  const searchParams = useSearchParams();
   const {
     messages,
     allMessages,
@@ -137,6 +139,42 @@ export const ContactMessagesList = () => {
 
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // Read query params and set filters on mount and when params change
+  useEffect(() => {
+    const statusParam = searchParams.get('status');
+    const importantParam = searchParams.get('important');
+    const messageIdParam = searchParams.get('message');
+
+    // Set status filter if provided
+    if (statusParam && (statusParam === 'unread' || statusParam === 'read')) {
+      setStatusFilter(statusParam);
+    } else if (!statusParam) {
+      // Reset to 'all' if no status param (optional - can keep current filter)
+      // setStatusFilter('all');
+    }
+
+    // Set important filter if provided
+    if (importantParam && (importantParam === 'important' || importantParam === 'not-important')) {
+      setImportantFilter(importantParam);
+    } else if (!importantParam) {
+      // Reset to 'all' if no important param (optional - can keep current filter)
+      // setImportantFilter('all');
+    }
+
+    // Open message modal if message ID is provided
+    if (messageIdParam && allMessages.length > 0) {
+      const message = allMessages.find(msg => msg.id === messageIdParam);
+      if (message) {
+        setSelectedMessage(message);
+        // Auto-mark as read when opening unread message
+        if (message.status === 'unread') {
+          updateStatus(message.id!, 'read');
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, allMessages]);
 
   // Selection logic functions
   const toggleSelect = (id: string) => {

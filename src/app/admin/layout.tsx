@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/features/admin/hooks/useAdminAuth';
+import { AdminSidebar } from '@/features/admin/components/AdminSidebar';
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAdminAuth();
@@ -30,29 +31,11 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Admin Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="container-custom py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold bg-linear-to-r from-primary-dark to-primary bg-clip-text text-transparent">
-              Admin Panel
-            </h1>
-            <button
-              onClick={async () => {
-                await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' });
-                router.push('/login');
-              }}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Admin Content */}
-      <main>{children}</main>
+    <div className="min-h-screen bg-gray-50 flex">
+      <AdminSidebar />
+      <main className="flex-1 ml-64">
+        {children}
+      </main>
     </div>
   );
 };

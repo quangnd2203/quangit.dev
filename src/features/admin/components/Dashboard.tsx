@@ -2,9 +2,10 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useProjects } from '@/features/projects/hooks/useProjects';
-import { useExperience } from '@/features/experience/hooks/useExperience';
-import { useSkills } from '@/features/skills/hooks/useSkills';
+import { useDashboardStats } from '../hooks/useDashboardStats';
+import { RecentActivity } from './RecentActivity';
+import { QuickActions } from './QuickActions';
+import { DashboardInsights } from './DashboardInsights';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -29,86 +30,73 @@ const itemVariants = {
   },
 };
 
-const quickLinks = [
-  {
-    id: 'personal-info',
-    title: 'Personal Info',
-    description: 'Edit personal information',
-    href: '/admin/personal-info',
-    icon: '👤',
-    color: 'from-pink-500 to-pink-600',
-  },
-  {
-    id: 'skills',
-    title: 'Skills',
-    description: 'Manage technical skills',
-    href: '/admin/skills',
-    icon: '🛠️',
-    color: 'from-purple-500 to-purple-600',
-  },
-  {
-    id: 'experiences',
-    title: 'Experiences',
-    description: 'Manage work experiences',
-    href: '/admin/experiences',
-    icon: '💼',
-    color: 'from-green-500 to-green-600',
-  },
-  {
-    id: 'projects',
-    title: 'Projects',
-    description: 'Manage portfolio projects',
-    href: '/admin/projects',
-    icon: '🚀',
-    color: 'from-blue-500 to-blue-600',
-  },
-  {
-    id: 'contact-messages',
-    title: 'Contact Messages',
-    description: 'View contact messages',
-    href: '/admin/contact-messages',
-    icon: '📧',
-    color: 'from-cyan-500 to-cyan-600',
-  },
-  {
-    id: 'blog',
-    title: 'Blog Posts',
-    description: 'Manage blog posts',
-    href: '/admin/blog',
-    icon: '📝',
-    color: 'from-orange-500 to-orange-600',
-  },
-];
-
 export const Dashboard = () => {
-  const { projects, loading: projectsLoading } = useProjects();
-  const { experiences, loading: experiencesLoading } = useExperience();
-  const { categories, loading: skillsLoading } = useSkills();
+  const { stats, loading } = useDashboardStats();
 
-  const stats = [
+  const enhancedStats = [
+    {
+      id: 'contact-messages',
+      label: 'Contact Messages',
+      value: loading ? '...' : stats.contactMessages.total.toString(),
+      subValue: `${stats.contactMessages.unread} unread`,
+      icon: '📧',
+      color: 'from-cyan-500 to-blue-600',
+      href: '/admin/contact-messages',
+      badge: stats.contactMessages.unread > 0 ? stats.contactMessages.unread : undefined,
+    },
     {
       id: 'projects',
-      label: 'Total Projects',
-      value: projectsLoading ? '...' : projects.length.toString(),
+      label: 'Projects',
+      value: loading ? '...' : stats.projects.total.toString(),
+      subValue: `${stats.projects.featured} featured`,
       icon: '🚀',
+      color: 'from-blue-500 to-purple-600',
+      href: '/admin/projects',
     },
     {
       id: 'experiences',
-      label: 'Work Experiences',
-      value: experiencesLoading ? '...' : experiences.length.toString(),
+      label: 'Experiences',
+      value: loading ? '...' : stats.experiences.total.toString(),
+      subValue: `${stats.experiences.current} current`,
       icon: '💼',
+      color: 'from-green-500 to-emerald-600',
+      href: '/admin/experiences',
     },
     {
       id: 'skills',
-      label: 'Skill Categories',
-      value: skillsLoading ? '...' : categories.length.toString(),
+      label: 'Skills',
+      value: loading ? '...' : stats.skills.total.toString(),
+      subValue: `${stats.skills.categories} categories`,
       icon: '🛠️',
+      color: 'from-purple-500 to-pink-600',
+      href: '/admin/skills',
     },
     {
-      id: 'blog',
-      label: 'Blog Posts',
-      value: '0', // Placeholder - will implement later
-      icon: '📝',
+      id: 'unread-messages',
+      label: 'Unread',
+      value: loading ? '...' : stats.contactMessages.unread.toString(),
+      subValue: 'Unread messages',
+      icon: '📬',
+      color: 'from-cyan-500 to-blue-600',
+      href: '/admin/contact-messages?status=unread',
+    },
+    {
+      id: 'important-messages',
+      label: 'Important',
+      value: loading ? '...' : stats.contactMessages.important.toString(),
+      subValue: 'Important messages',
+      icon: '⭐',
+      color: 'from-yellow-500 to-orange-600',
+      href: '/admin/contact-messages?important=important',
+    },
+    {
+      id: 'recent-messages',
+      label: 'Recent (7d)',
+      value: loading ? '...' : stats.contactMessages.recent7Days.toString(),
+      subValue: 'Last 7 days',
+      icon: '📅',
+      color: 'from-indigo-500 to-blue-600',
+      href: '/admin/contact-messages',
     },
   ];
 
@@ -127,73 +115,68 @@ export const Dashboard = () => {
         <p className="text-lg text-gray-600">Welcome to the admin panel</p>
       </motion.div>
 
-      {/* Stats Overview */}
+      {/* Enhanced Stats Overview */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8"
       >
-        {stats.map((stat) => (
+        {enhancedStats.map((stat) => (
           <motion.div
             key={stat.id}
             variants={itemVariants}
             whileHover={{ y: -4, scale: 1.02 }}
-            className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all"
           >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-3xl">{stat.icon}</span>
-              <div className="text-right">
-                <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
-                <p className="text-sm text-gray-600 mt-1">{stat.label}</p>
+            <Link
+              href={stat.href}
+              className="block bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-lg transition-all group"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className={`text-2xl p-2 rounded-lg bg-linear-to-br ${stat.color} text-white group-hover:scale-110 transition-transform`}>
+                  {stat.icon}
+                </div>
+                {stat.badge && (
+                  <span className="inline-flex items-center justify-center min-w-[24px] h-6 px-1.5 text-xs font-bold text-white bg-red-500 rounded-full">
+                    {stat.badge}
+                  </span>
+                )}
               </div>
-            </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-xs text-gray-600 mt-1 font-medium">{stat.label}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{stat.subValue}</p>
+              </div>
+            </Link>
           </motion.div>
         ))}
       </motion.div>
 
-      {/* Quick Links */}
+      {/* Recent Activity & Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <RecentActivity />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <QuickActions />
+        </motion.div>
+      </div>
+
+      {/* Insights & Metrics */}
       <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
       >
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Links</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quickLinks.map((link) => (
-            <motion.div
-              key={link.id}
-              variants={itemVariants}
-              whileHover={{ y: -4, scale: 1.02 }}
-            >
-              <Link
-                href={link.href}
-                className="block bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-lg transition-all group"
-              >
-                <div className="flex items-start gap-4">
-                  <div className={`text-4xl p-3 rounded-lg bg-linear-to-br ${link.color} text-white group-hover:scale-110 transition-transform`}>
-                    {link.icon}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-primary transition-colors">
-                      {link.title}
-                    </h3>
-                    <p className="text-sm text-gray-600">{link.description}</p>
-                  </div>
-                  <svg
-                    className="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+        <DashboardInsights />
       </motion.div>
     </div>
   );
