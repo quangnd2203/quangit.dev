@@ -23,10 +23,13 @@ const CatchAllPage = () => {
 
   useEffect(() => {
     if (!target) return;
-    const el = document.getElementById(target);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+  
+    const timer = window.setTimeout(() => {
+      const el = document.getElementById(target);
+      el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 200);
+  
+    return () => window.clearTimeout(timer);
   }, [target]);
 
   return (

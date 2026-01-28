@@ -13,7 +13,7 @@ export class SendContactMessage {
     // Set status and timestamp
     const messageToSave: ContactMessage = {
       ...message,
-      status: 'pending',
+      status: 'unread',
       createdAt: new Date().toISOString()
     };
     

@@ -1,28 +1,61 @@
 import { IContactRepository } from '@/core/interfaces/IContactRepository';
 import { ContactMessage } from '@/core/entities/ContactMessage';
 
-// In-memory storage for contact messages (for development)
-// In production, this would connect to a database or API
-const contactMessagesStorage: ContactMessage[] = [];
-
 export class ContactRepository implements IContactRepository {
   async create(message: ContactMessage): Promise<ContactMessage> {
-    // Generate ID if not provided
-    const messageWithId: ContactMessage = {
-      ...message,
-      id: message.id || `contact-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: message.createdAt || new Date().toISOString(),
-      status: message.status || 'pending'
-    };
+    try {
+      const response = await fetch('/api/admin/contact-messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: message.name,
+          email: message.email,
+          subject: message.subject,
+          message: message.message
+        }),
+      });
 
-    // Store in memory (in production, save to database)
-    contactMessagesStorage.push(messageWithId);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create contact message');
+      }
 
-    return Promise.resolve(messageWithId);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error creating contact message:', error);
+      throw error instanceof Error ? error : new Error('Failed to create contact message');
+    }
+  }
+
+  async getAll(): Promise<ContactMessage[]> {
+    try {
+      const response = await fetch('/api/admin/contact-messages', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch contact messages');
+      }
+
+      const data = await response.json();
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching contact messages:', error);
+      return [];
+    }
   }
 
   async getById(id: string): Promise<ContactMessage | null> {
-    const message = contactMessagesStorage.find(msg => msg.id === id);
-    return Promise.resolve(message || null);
+    try {
+      const messages = await this.getAll();
+      return messages.find(msg => msg.id === id) || null;
+    } catch (error) {
+      console.error('Error fetching contact message by id:', error);
+      return null;
+    }
   }
 }

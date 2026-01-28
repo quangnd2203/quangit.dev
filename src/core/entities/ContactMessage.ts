@@ -5,5 +5,6 @@ export interface ContactMessage {
   subject: string;                      // Message subject
   message: string;                      // Message content
   createdAt?: string;                   // Submission timestamp
-  status?: 'pending' | 'sent' | 'failed'; // Message status
+  status?: 'unread' | 'read';           // Message status
+  isImportant?: boolean;                // Mark message as important
 }
