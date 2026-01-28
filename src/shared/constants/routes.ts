@@ -1,5 +1,6 @@
 /** Section IDs matching app/page.tsx — used for nav links and smooth scroll */
 export const SECTION_IDS = {
+  home: 'home',
   experience: 'experience',
   skills: 'skills',
   projects: 'projects',
