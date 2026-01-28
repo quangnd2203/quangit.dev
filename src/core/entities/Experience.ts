@@ -9,5 +9,4 @@ export interface Experience {
   achievements: string[];              // List of achievements/responsibilities
   technologies?: string[];              // Technologies used (optional)
   location?: string;                     // Location (optional)
-  description?: string;                 // Additional description (optional)
 }
