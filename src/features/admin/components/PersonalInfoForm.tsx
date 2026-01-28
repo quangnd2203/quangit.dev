@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { usePersonalInfoAdmin } from '../hooks/usePersonalInfoAdmin';
+import { RichTextEditor } from '@/shared/components/ui/RichTextEditor';
 
 export const PersonalInfoForm = () => {
   const {
@@ -11,6 +12,7 @@ export const PersonalInfoForm = () => {
     error,
     success,
     handleChange,
+    handleDescriptionChange,
     handleAddHighlight,
     handleRemoveHighlight,
     handleHighlightChange,
@@ -92,15 +94,11 @@ export const PersonalInfoForm = () => {
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
               Professional Description *
             </label>
-            <textarea
-              id="description"
-              name="description"
+            <RichTextEditor
               value={formData.description}
-              onChange={handleChange}
-              required
+              onChange={handleDescriptionChange}
+              placeholder="Enter your professional description..."
               disabled={saving}
-              rows={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed resize-vertical"
             />
           </div>
 
@@ -236,7 +234,7 @@ export const PersonalInfoForm = () => {
                 Website
               </label>
               <input
-                type="url"
+                type="text"
                 id="contact.website"
                 name="contact.website"
                 value={formData.contact.website || ''}

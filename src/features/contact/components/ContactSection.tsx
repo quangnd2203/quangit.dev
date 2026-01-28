@@ -1,7 +1,9 @@
 'use client';
 
+import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useContactForm } from '../hooks/useContactForm';
+import { useHome } from '@/features/home/hooks/useHome';
 
 const headerVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -56,41 +58,103 @@ const messageVariants = {
   exit: { opacity: 0, y: -10 }
 };
 
-const contactInfo = [
-  {
-    id: 'email',
-    icon: '📧',
-    label: 'Email',
-    value: 'quangnd22398.dev@gmail.com',
-    href: 'mailto:quangnd22398.dev@gmail.com'
-  },
-  {
-    id: 'phone',
-    icon: '📱',
-    label: 'Phone',
-    value: '(+84) 34 781 1798',
-    href: 'tel:+84347811798'
-  },
-  {
-    id: 'github',
-    icon: '💻',
-    label: 'GitHub',
-    value: 'github.com/quangnd2203',
-    href: 'https://github.com/quangnd2203',
-    external: true
-  },
-  {
-    id: 'website',
-    icon: '🌐',
-    label: 'Website',
-    value: 'quangit.dev',
-    href: 'https://quangit.dev',
-    external: true
-  }
-];
-
 export const ContactSection = () => {
   const { formData, loading, error, success, handleChange, handleSubmit } = useContactForm();
+  const { personalInfo } = useHome();
+
+  // Build contactInfo dynamically from personalInfo
+  const contactInfo = useMemo(() => {
+    if (!personalInfo) return [];
+
+    const items: Array<{
+      id: string;
+      icon: string;
+      label: string;
+      value: string;
+      href?: string;
+      external?: boolean;
+    }> = [
+        {
+          id: 'email',
+          icon: '📧',
+          label: 'Email',
+          value: personalInfo.contact.email,
+          href: `mailto:${personalInfo.contact.email}`,
+        },
+        {
+          id: 'phone',
+          icon: '📱',
+          label: 'Phone',
+          value: personalInfo.contact.phone,
+          href: `tel:${personalInfo.contact.phone.replace(/\s/g, '')}`,
+        },
+      ];
+
+    // Add optional contact fields if they exist
+    if (personalInfo.contact.github) {
+      items.push({
+        id: 'github',
+        icon: '💻',
+        label: 'GitHub',
+        value: personalInfo.contact.github,
+        href: personalInfo.contact.github.startsWith('http')
+          ? personalInfo.contact.github
+          : `https://${personalInfo.contact.github}`,
+        external: true,
+      });
+    }
+
+    // if (personalInfo.contact.website) {
+    //   items.push({
+    //     id: 'website',
+    //     icon: '🌐',
+    //     label: 'Website',
+    //     value: personalInfo.contact.website,
+    //     href: personalInfo.contact.website.startsWith('http')
+    //       ? personalInfo.contact.website
+    //       : `https://${personalInfo.contact.website}`,
+    //     external: true,
+    //   });
+    // }
+
+    if (personalInfo.contact.linkedin) {
+      items.push({
+        id: 'linkedin',
+        icon: '💼',
+        label: 'LinkedIn',
+        value: personalInfo.contact.linkedin,
+        href: personalInfo.contact.linkedin.startsWith('http')
+          ? personalInfo.contact.linkedin
+          : `https://${personalInfo.contact.linkedin}`,
+        external: true,
+      });
+    }
+
+    if (personalInfo.contact.twitter) {
+      items.push({
+        id: 'twitter',
+        icon: '🐦',
+        label: 'Twitter',
+        value: personalInfo.contact.twitter,
+        href: personalInfo.contact.twitter.startsWith('http')
+          ? personalInfo.contact.twitter
+          : `https://${personalInfo.contact.twitter}`,
+        external: true,
+      });
+    }
+
+    // Add location if it exists (no href, just display)
+    if (personalInfo.location) {
+      items.push({
+        id: 'location',
+        icon: '📍',
+        label: 'Location',
+        value: personalInfo.location,
+      });
+    }
+
+    return items;
+  }, [personalInfo]);
 
   return (
     <motion.section
@@ -124,27 +188,49 @@ export const ContactSection = () => {
                 </p>
               </motion.div>
 
-              {contactInfo.map((info) => (
-                <motion.a
-                  key={info.id}
-                  variants={leftItemVariants}
-                  href={info.href}
-                  target={info.external ? '_blank' : undefined}
-                  rel={info.external ? 'noopener noreferrer' : undefined}
-                  className="flex items-center gap-4 py-5 px-6 bg-white border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all"
-                >
-                  <span className="text-3xl shrink-0">{info.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-500">{info.label}</p>
-                    <p className="text-base font-semibold text-gray-900 truncate">
-                      {info.value}
-                    </p>
-                  </div>
-                  {info.external && (
-                    <span className="text-gray-400 shrink-0">→</span>
-                  )}
-                </motion.a>
-              ))}
+              {contactInfo.map((info) => {
+                const commonProps = {
+                  variants: leftItemVariants,
+                  className: "flex items-center gap-4 py-4.25 px-6 bg-white border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all",
+                };
+
+                // Location doesn't have href, render as div
+                if (!info.href) {
+                  return (
+                    <motion.div key={info.id} {...commonProps}>
+                      <span className="text-3xl shrink-0">{info.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-500">{info.label}</p>
+                        <p className="text-base font-semibold text-gray-900 truncate">
+                          {info.value}
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                }
+
+                // Other items have href, render as anchor
+                return (
+                  <motion.a
+                    key={info.id}
+                    {...commonProps}
+                    href={info.href}
+                    target={info.external ? '_blank' : undefined}
+                    rel={info.external ? 'noopener noreferrer' : undefined}
+                  >
+                    <span className="text-3xl shrink-0">{info.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-500">{info.label}</p>
+                      <p className="text-base font-semibold text-gray-900 truncate">
+                        {info.value}
+                      </p>
+                    </div>
+                    {info.external && (
+                      <span className="text-gray-400 shrink-0">→</span>
+                    )}
+                  </motion.a>
+                );
+              })}
             </motion.div>
 
             {/* Right: Form */}

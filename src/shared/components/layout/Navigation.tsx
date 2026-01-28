@@ -11,6 +11,18 @@ export const Navigation = () => {
   const [open, setOpen] = useState(false);
   const activeId = useActiveSection();
 
+  // const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  //   e.preventDefault();
+  //   const sectionId = href.slice(1);
+  //   const element = document.getElementById(sectionId);
+  //   if (element) {
+  //     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  //     // Update URL without triggering navigation
+  //     window.history.pushState({}, '', href);
+  //   }
+  //   setOpen(false);
+  // };
+
   return (
     <nav className="flex items-center gap-8">
       <div className="hidden md:flex items-center gap-4">
@@ -92,7 +104,6 @@ export const Navigation = () => {
                   <Link
                     key={href}
                     href={href}
-                    onClick={() => setOpen(false)}
                     className={cn(
                       'px-4 py-3 rounded-lg text-gray-700 font-medium transition-all duration-200',
                       'hover:text-primary hover:bg-gray-50',

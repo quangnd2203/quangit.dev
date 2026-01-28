@@ -1,10 +1,20 @@
 import { IPersonalInfoRepository } from '@/core/interfaces/IPersonalInfoRepository';
 import { PersonalInfo } from '@/core/entities/PersonalInfo';
-import { mockPersonalInfo } from '@/shared/data/personalInfo';
 
 export class PersonalInfoRepository implements IPersonalInfoRepository {
   async get(): Promise<PersonalInfo | null> {
-    // Return mock data
-    return Promise.resolve(mockPersonalInfo);
+    try {
+      const response = await fetch('/api/admin/personal-info');
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch personal info');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching personal info:', error);
+      return null;
+    }
   }
 }

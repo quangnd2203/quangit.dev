@@ -2,18 +2,9 @@ import { NextResponse } from 'next/server';
 import { getPersonalInfo, updatePersonalInfo } from '@/server/api/admin/personal-info';
 import { verifyAuth } from '@/server/api/middleware';
 
-export const GET = async (request: Request) => {
+export const GET = async () => {
   try {
-    // Check authentication
-    const authResult = await verifyAuth(request);
-    if (!authResult.authenticated) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    // Get personal info
+    // Get personal info (no auth check - public endpoint)
     const personalInfo = await getPersonalInfo();
 
     if (!personalInfo) {

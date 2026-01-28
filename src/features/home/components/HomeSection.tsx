@@ -130,9 +130,10 @@ export const HomeSection = () => {
             </p>
 
             {/* Description */}
-            <p className="text-base md:text-lg text-gray-700 leading-loose mb-8 max-w-2xl">
-              {personalInfo.description}
-            </p>
+            <div
+              className="text-base md:text-lg text-gray-700 leading-loose mb-8 max-w-2xl prose"
+              dangerouslySetInnerHTML={{ __html: personalInfo.description }}
+            />
 
             {/* Highlights Badges */}
             <motion.div

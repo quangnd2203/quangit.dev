@@ -91,6 +91,17 @@ export const usePersonalInfoAdmin = () => {
     }));
   };
 
+  const handleDescriptionChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      description: value,
+    }));
+
+    // Clear error when user starts typing
+    if (error) setError(null);
+    if (success) setSuccess(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSaving(true);
@@ -129,6 +140,7 @@ export const usePersonalInfoAdmin = () => {
     error,
     success,
     handleChange,
+    handleDescriptionChange,
     handleAddHighlight,
     handleRemoveHighlight,
     handleHighlightChange,
