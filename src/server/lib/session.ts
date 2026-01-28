@@ -1,8 +1,6 @@
 import { randomBytes } from 'crypto';
-import { readJsonFile, writeJsonFile } from '@/server/data/jsonStorage';
+import { readJsonFile, writeJsonFile, deleteKey } from '@/server/data/redisStorage';
 
-// File-based session storage
-// Sessions are persisted to .data/sessions.json to survive server restarts
 interface Session {
   token: string;
   userId: string;
@@ -10,35 +8,8 @@ interface Session {
   expiresAt: number;
 }
 
-const SESSIONS_FILE = 'sessions.json';
-
-// Session expires after 24 hours
-const SESSION_DURATION = 24 * 60 * 60 * 1000;
-
-/**
- * Load sessions from file
- */
-const loadSessions = async (): Promise<Record<string, Session>> => {
-  try {
-    const sessions = await readJsonFile<Record<string, Session>>(SESSIONS_FILE);
-    return sessions || {};
-  } catch (error) {
-    console.error('Error loading sessions:', error);
-    return {};
-  }
-};
-
-/**
- * Save sessions to file
- */
-const saveSessions = async (sessions: Record<string, Session>): Promise<void> => {
-  try {
-    await writeJsonFile(SESSIONS_FILE, sessions);
-  } catch (error) {
-    console.error('Error saving sessions:', error);
-    throw error;
-  }
-};
+// Session expires after 24 hours (in seconds for Redis TTL)
+const SESSION_DURATION_SECONDS = 24 * 60 * 60;
 
 /**
  * Create a new session and return the token
@@ -52,17 +23,11 @@ export const createSession = async (userId: string): Promise<string> => {
     token,
     userId,
     createdAt: now,
-    expiresAt: now + SESSION_DURATION,
+    expiresAt: now + (SESSION_DURATION_SECONDS * 1000),
   };
   
-  // Load existing sessions
-  const sessions = await loadSessions();
-  
-  // Add new session
-  sessions[token] = session;
-  
-  // Save to file
-  await saveSessions(sessions);
+  // Save session with TTL (Redis will auto-expire)
+  await writeJsonFile(`sessions:${token}`, session, SESSION_DURATION_SECONDS);
   
   return token;
 };
@@ -73,18 +38,16 @@ export const createSession = async (userId: string): Promise<string> => {
 export const verifySession = async (token: string): Promise<boolean> => {
   if (!token) return false;
   
-  // Load sessions from file
-  const sessions = await loadSessions();
-  const session = sessions[token];
+  // Load session (Redis TTL handles expiration automatically)
+  const session = await readJsonFile<Session>(`sessions:${token}`);
   
   if (!session) return false;
   
-  // Check if session has expired
+  // Double-check expiration
   const now = Date.now();
   if (now > session.expiresAt) {
     // Remove expired session
-    delete sessions[token];
-    await saveSessions(sessions);
+    await deleteKey(`sessions:${token}`);
     return false;
   }
   
@@ -96,34 +59,15 @@ export const verifySession = async (token: string): Promise<boolean> => {
  */
 export const clearSession = async (token: string): Promise<void> => {
   if (!token) return;
-  
-  // Load sessions from file
-  const sessions = await loadSessions();
-  
-  // Remove session
-  if (sessions[token]) {
-    delete sessions[token];
-    await saveSessions(sessions);
-  }
+  await deleteKey(`sessions:${token}`);
 };
 
 /**
- * Clean up expired sessions (can be called periodically)
+ * Clean up expired sessions
+ * Note: Redis TTL handles expiration automatically, so this function is mainly for manual cleanup if needed
  */
 export const cleanupExpiredSessions = async (): Promise<void> => {
-  const now = Date.now();
-  const sessions = await loadSessions();
-  
-  let hasChanges = false;
-  for (const [token, session] of Object.entries(sessions)) {
-    if (now > session.expiresAt) {
-      delete sessions[token];
-      hasChanges = true;
-    }
-  }
-  
-  // Only save if there were changes
-  if (hasChanges) {
-    await saveSessions(sessions);
-  }
+  // Redis TTL handles expiration automatically
+  // This function is kept for compatibility but does nothing
+  // If manual cleanup is needed, it would require scanning all session keys, which is not efficient
 };

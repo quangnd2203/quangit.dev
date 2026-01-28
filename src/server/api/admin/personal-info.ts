@@ -1,14 +1,15 @@
 import { PersonalInfo } from '@/core/entities/PersonalInfo';
-import { readJsonFile, writeJsonFile } from '@/server/data/jsonStorage';
+import { readJsonFile, writeJsonFile } from '@/server/data/redisStorage';
 
-const PERSONAL_INFO_FILE = 'personal-info.json';
+// Redis key
+const PERSONAL_INFO_KEY = 'personal-info';
 
 /**
  * Get personal information
  */
 export const getPersonalInfo = async (): Promise<PersonalInfo | null> => {
   try {
-    const data = await readJsonFile<PersonalInfo>(PERSONAL_INFO_FILE);
+    const data = await readJsonFile<PersonalInfo>(PERSONAL_INFO_KEY);
     return data;
   } catch (error) {
     console.error('Error getting personal info:', error);
@@ -30,8 +31,8 @@ export const updatePersonalInfo = async (data: PersonalInfo): Promise<PersonalIn
       throw new Error('Email and phone are required');
     }
 
-    // Write to JSON file
-    await writeJsonFile(PERSONAL_INFO_FILE, data);
+    // Write to Redis
+    await writeJsonFile(PERSONAL_INFO_KEY, data);
 
     return data;
   } catch (error) {

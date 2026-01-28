@@ -1,24 +1,24 @@
 import { NextResponse } from 'next/server';
-import { getPersonalInfo, updatePersonalInfo } from '@/server/api/admin/personal-info';
+import { getSkills, updateSkills } from '@/server/api/admin/skills';
 import { verifyAuth } from '@/server/api/middleware';
 
 export const dynamic = 'force-dynamic';
 
 export const GET = async () => {
   try {
-    // Get personal info (no auth check - public endpoint)
-    const personalInfo = await getPersonalInfo();
+    // Get skills (no auth check - public endpoint)
+    const skills = await getSkills();
 
-    if (!personalInfo) {
+    if (!skills) {
       return NextResponse.json(
-        { error: 'Personal info not found' },
+        { error: 'Skills not found' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(personalInfo, { status: 200 });
+    return NextResponse.json(skills, { status: 200 });
   } catch (error) {
-    console.error('Get personal info error:', error);
+    console.error('Get skills error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -40,12 +40,12 @@ export const PUT = async (request: Request) => {
     // Get request body
     const body = await request.json();
 
-    // Update personal info
-    const updated = await updatePersonalInfo(body);
+    // Update skills
+    const updated = await updateSkills(body);
 
     return NextResponse.json(updated, { status: 200 });
   } catch (error) {
-    console.error('Update personal info error:', error);
+    console.error('Update skills error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }

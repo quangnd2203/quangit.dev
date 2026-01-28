@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { logout } from '@/server/api/admin/auth';
 import { verifyAuth } from '@/server/api/middleware';
 
+export const dynamic = 'force-dynamic';
+
 export const POST = async (request: Request) => {
   try {
     // Get token from request

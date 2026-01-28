@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { verifyAuth } from '@/server/api/middleware';
 
+export const dynamic = 'force-dynamic';
+
 export const GET = async (request: Request) => {
   try {
     const authResult = await verifyAuth(request);

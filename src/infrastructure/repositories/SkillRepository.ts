@@ -1,15 +1,30 @@
 import { ISkillRepository } from '@/core/interfaces/ISkillRepository';
 import { SkillCategory } from '@/core/entities/SkillCategory';
-import { mockSkillCategories } from '@/shared/data/skills';
 
 export class SkillRepository implements ISkillRepository {
   async getAllCategories(): Promise<SkillCategory[]> {
-    // Return mock data
-    return Promise.resolve(mockSkillCategories);
+    try {
+      const response = await fetch('/api/admin/skills');
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch skills');
+      }
+      
+      const data = await response.json();
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching skills:', error);
+      return [];
+    }
   }
 
   async getCategoryById(id: string): Promise<SkillCategory | null> {
-    const category = mockSkillCategories.find(cat => cat.id === id);
-    return Promise.resolve(category || null);
+    try {
+      const categories = await this.getAllCategories();
+      return categories.find(cat => cat.id === id) || null;
+    } catch (error) {
+      console.error('Error fetching category by id:', error);
+      return null;
+    }
   }
 }
