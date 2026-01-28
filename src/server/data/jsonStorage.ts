@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs/promises';
+import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
 const DATA_DIR = join(process.cwd(), '.data');
@@ -25,6 +25,9 @@ export const readJsonFile = async <T>(filename: string): Promise<T | null> => {
  */
 export const writeJsonFile = async <T>(filename: string, data: T): Promise<void> => {
   try {
+    // Create directory if it doesn't exist
+    await mkdir(DATA_DIR, { recursive: true });
+    
     const filePath = join(DATA_DIR, filename);
     await writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
   } catch (error) {
