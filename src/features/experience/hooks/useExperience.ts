@@ -3,12 +3,14 @@ import { GetExperiences } from '@/core/use-cases/GetExperiences';
 import { ExperienceRepository } from '@/infrastructure/repositories/ExperienceRepository';
 import { Experience } from '@/core/entities/Experience';
 
-export const useExperience = () => {
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [loading, setLoading] = useState(true);
+export const useExperience = (initialData?: Experience[]) => {
+  const [experiences, setExperiences] = useState<Experience[]>(initialData || []);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initialData) return;
+
     const loadData = async () => {
       setLoading(true);
       setError(null);
@@ -27,7 +29,7 @@ export const useExperience = () => {
     };
 
     loadData();
-  }, []);
+  }, [initialData]);
 
   return { experiences, loading, error };
 };

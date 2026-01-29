@@ -19,11 +19,11 @@ const containerVariants = {
 
 const leftColumnVariants = {
   hidden: { opacity: 0, y: 40, x: -20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
+  visible: {
+    opacity: 1,
+    y: 0,
     x: 0,
-    transition: { 
+    transition: {
       duration: 0.8,
       ease: [0.22, 1, 0.36, 1]
     }
@@ -32,11 +32,11 @@ const leftColumnVariants = {
 
 const rightColumnVariants = {
   hidden: { opacity: 0, scale: 0.8, rotate: -5 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     scale: 1,
     rotate: 0,
-    transition: { 
+    transition: {
       duration: 0.8,
       ease: [0.22, 1, 0.36, 1]
     }
@@ -45,8 +45,8 @@ const rightColumnVariants = {
 
 const badgeVariants = {
   hidden: { opacity: 0, y: 10 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.4 }
   }
@@ -59,8 +59,14 @@ const scrollToSection = (sectionId: string) => {
   }
 };
 
-export const HomeSection = () => {
-  const { personalInfo, loading, error } = useHome();
+import { PersonalInfo } from '@/core/entities/PersonalInfo';
+
+interface HomeSectionProps {
+  initialData?: PersonalInfo | null;
+}
+
+export const HomeSection = ({ initialData }: HomeSectionProps) => {
+  const { personalInfo, loading, error } = useHome(initialData);
 
   if (loading) {
     return (
@@ -108,7 +114,7 @@ export const HomeSection = () => {
       {/* Background Decorative Elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl -z-10"></div>
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl -z-10"></div>
-      
+
       {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[24px_24px] -z-10 opacity-40"></div>
 
@@ -229,7 +235,7 @@ export const HomeSection = () => {
             <div className="relative">
               {/* Decorative ring */}
               <div className="absolute inset-0 rounded-[35%] bg-linear-to-br from-primary/20 to-accent/20 blur-2xl -z-10 scale-110"></div>
-              
+
               {/* Image with enhanced shadow */}
               <div className="relative w-64 h-72 md:w-80 md:h-88 lg:w-120 lg:h-150">
                 <Image
@@ -241,7 +247,7 @@ export const HomeSection = () => {
                   className="rounded-[35%] border-4 border-white shadow-2xl object-cover ring-4 ring-primary/20"
                 />
               </div>
-              
+
               {/* Floating decorative elements */}
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-primary/10 rounded-full blur-xl"></div>
               <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-accent/10 rounded-full blur-xl"></div>

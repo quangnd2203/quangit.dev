@@ -58,9 +58,15 @@ const messageVariants = {
   exit: { opacity: 0, y: -10 }
 };
 
-export const ContactSection = () => {
+import { PersonalInfo } from '@/core/entities/PersonalInfo';
+
+interface ContactSectionProps {
+  initialData?: PersonalInfo | null;
+}
+
+export const ContactSection = ({ initialData }: ContactSectionProps) => {
   const { formData, loading, error, success, handleChange, handleSubmit } = useContactForm();
-  const { personalInfo } = useHome();
+  const { personalInfo } = useHome(initialData);
 
   // Build contactInfo dynamically from personalInfo
   const contactInfo = useMemo(() => {

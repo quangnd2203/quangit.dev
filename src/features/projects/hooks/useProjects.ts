@@ -3,12 +3,14 @@ import { GetProjects } from '@/core/use-cases/GetProjects';
 import { ProjectRepository } from '@/infrastructure/repositories/ProjectRepository';
 import { Project } from '@/core/entities/Project';
 
-export const useProjects = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+export const useProjects = (initialData?: Project[]) => {
+  const [projects, setProjects] = useState<Project[]>(initialData || []);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initialData) return;
+
     const loadData = async () => {
       setLoading(true);
       setError(null);
@@ -25,7 +27,7 @@ export const useProjects = () => {
       }
     };
     loadData();
-  }, []);
+  }, [initialData]);
 
   return { projects, loading, error };
 };

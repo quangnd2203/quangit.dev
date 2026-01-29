@@ -53,8 +53,14 @@ const getProficiencyColor = (level: string) => {
   }
 };
 
-export const SkillsSection = () => {
-  const { categories, loading, error } = useSkills();
+import { SkillCategory } from '@/core/entities/SkillCategory';
+
+interface SkillsSectionProps {
+  initialData?: SkillCategory[] | null;
+}
+
+export const SkillsSection = ({ initialData }: SkillsSectionProps) => {
+  const { categories, loading, error } = useSkills(initialData || undefined);
 
   if (loading) {
     return (

@@ -42,8 +42,14 @@ const headerVariants = {
   }
 };
 
-export const ProjectsSection = () => {
-  const { projects, loading, error } = useProjects();
+import { Project } from '@/core/entities/Project';
+
+interface ProjectsSectionProps {
+  initialData?: Project[] | null;
+}
+
+export const ProjectsSection = ({ initialData }: ProjectsSectionProps) => {
+  const { projects, loading, error } = useProjects(initialData || undefined);
   const {
     selectedProject,
     isOpen,

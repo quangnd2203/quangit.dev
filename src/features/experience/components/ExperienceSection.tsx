@@ -39,8 +39,14 @@ const headerVariants = {
   }
 };
 
-export const ExperienceSection = () => {
-  const { experiences, loading, error } = useExperience();
+import { Experience } from '@/core/entities/Experience';
+
+interface ExperienceSectionProps {
+  initialData?: Experience[] | null;
+}
+
+export const ExperienceSection = ({ initialData }: ExperienceSectionProps) => {
+  const { experiences, loading, error } = useExperience(initialData || undefined);
 
   if (loading) {
     return (

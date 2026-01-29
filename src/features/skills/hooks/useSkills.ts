@@ -3,12 +3,14 @@ import { GetSkills } from '@/core/use-cases/GetSkills';
 import { SkillRepository } from '@/infrastructure/repositories/SkillRepository';
 import { SkillCategory } from '@/core/entities/SkillCategory';
 
-export const useSkills = () => {
-  const [categories, setCategories] = useState<SkillCategory[]>([]);
-  const [loading, setLoading] = useState(true);
+export const useSkills = (initialData?: SkillCategory[]) => {
+  const [categories, setCategories] = useState<SkillCategory[]>(initialData || []);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initialData) return;
+
     const loadData = async () => {
       setLoading(true);
       setError(null);
@@ -27,7 +29,7 @@ export const useSkills = () => {
     };
 
     loadData();
-  }, []);
+  }, [initialData]);
 
   return { categories, loading, error };
 };

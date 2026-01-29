@@ -1,20 +1,25 @@
-'use client';
-
-import { useEffect } from 'react';
-import { notFound, useParams, usePathname, useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { HomeSection } from '@/features/home';
 import { SkillsSection } from '@/features/skills';
 import { ExperienceSection } from '@/features/experience';
 import { ProjectsSection } from '@/features/projects';
 import { ContactSection } from '@/features/contact';
-import { Header, Footer } from '@/shared/components/layout';
+import { Header, Footer, ScrollManager } from '@/shared/components/layout';
 import NotFound from '../not-found';
 import { SECTION_IDS } from '@/shared/constants';
+import { getPersonalInfo } from '@/server/api/admin/personal-info';
+import { getSkills } from '@/server/api/admin/skills';
+import { getExperiences } from '@/server/api/admin/experiences';
+import { getProjects } from '@/server/api/admin/projects';
 
-const CatchAllPage = () => {
-  const params = useParams();
+interface PageProps {
+  params: {
+    page?: string[];
+  };
+}
 
-  const slug = params?.page as string[] | undefined;
+const CatchAllPage = async ({ params }: PageProps) => {
+  const slug = params?.page;
   const target = slug?.[0];
   const validTargets = Object.values(SECTION_IDS) as string[];
 
@@ -22,26 +27,24 @@ const CatchAllPage = () => {
     return <NotFound />;
   }
 
-  useEffect(() => {
-    if (!target) return;
-
-    const timer = window.setTimeout(() => {
-      const el = document.getElementById(target);
-      el?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 1000);
-
-    return () => window.clearTimeout(timer);
-  }, [target]);
+  // Fetch all data on the server in parallel
+  const [personalInfo, skills, experiences, projects] = await Promise.all([
+    getPersonalInfo(),
+    getSkills(),
+    getExperiences(),
+    getProjects()
+  ]);
 
   return (
     <>
+      <ScrollManager target={target} />
       <Header />
       <main className="min-h-screen">
-        <HomeSection />
-        <SkillsSection />
-        <ExperienceSection />
-        <ProjectsSection />
-        <ContactSection />
+        <HomeSection initialData={personalInfo} />
+        <SkillsSection initialData={skills} />
+        <ExperienceSection initialData={experiences} />
+        <ProjectsSection initialData={projects} />
+        <ContactSection initialData={personalInfo} />
       </main>
       <Footer />
     </>
