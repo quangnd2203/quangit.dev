@@ -24,12 +24,12 @@ const CatchAllPage = () => {
 
   useEffect(() => {
     if (!target) return;
-  
+
     const timer = window.setTimeout(() => {
       const el = document.getElementById(target);
       el?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 500);
-  
+    }, 1000);
+
     return () => window.clearTimeout(timer);
   }, [target]);
 
