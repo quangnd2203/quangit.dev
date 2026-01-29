@@ -28,7 +28,7 @@ const CatchAllPage = () => {
     const timer = window.setTimeout(() => {
       const el = document.getElementById(target);
       el?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 200);
+    }, 500);
   
     return () => window.clearTimeout(timer);
   }, [target]);
