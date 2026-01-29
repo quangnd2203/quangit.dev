@@ -107,7 +107,7 @@ export const DashboardInsights = () => {
           variants={itemVariants}
           initial="hidden"
           animate="visible"
-          className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg border border-blue-100"
+          className="p-4 bg-linear-to-br from-blue-50 to-cyan-50 rounded-lg border border-blue-100"
         >
           <h3 className="text-sm font-semibold text-gray-700 mb-3">Contact Trends</h3>
           <div className="space-y-2">
@@ -140,7 +140,7 @@ export const DashboardInsights = () => {
           initial="hidden"
           animate="visible"
           transition={{ delay: 0.1 }}
-          className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-100"
+          className="p-4 bg-linear-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-100"
         >
           <h3 className="text-sm font-semibold text-gray-700 mb-3">Portfolio Overview</h3>
           <div className="space-y-2">
@@ -187,7 +187,7 @@ export const DashboardInsights = () => {
           initial="hidden"
           animate="visible"
           transition={{ delay: 0.2 }}
-          className="p-4 bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg border border-orange-100"
+          className="p-4 bg-linear-to-br from-orange-50 to-yellow-50 rounded-lg border border-orange-100"
         >
           <h3 className="text-sm font-semibold text-gray-700 mb-3">Skills Distribution</h3>
           <div className="space-y-2">

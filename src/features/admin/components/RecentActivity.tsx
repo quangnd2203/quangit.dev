@@ -75,7 +75,7 @@ export const RecentActivity = () => {
               className="block p-3 rounded-lg hover:bg-gray-50 transition-colors group"
             >
               <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-1">
+                <div className="shrink-0 mt-1">
                   {message.status === 'unread' ? (
                     <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                   ) : (
@@ -101,7 +101,7 @@ export const RecentActivity = () => {
                     </div>
                     {message.isImportant && (
                       <svg
-                        className="w-4 h-4 text-yellow-500 flex-shrink-0"
+                        className="w-4 h-4 text-yellow-500 shrink-0"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >

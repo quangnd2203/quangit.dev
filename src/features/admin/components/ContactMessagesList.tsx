@@ -76,7 +76,7 @@ const MessageCard = ({
         <div className="px-4 py-3">
           <div className="flex items-start gap-3">
             {/* Status indicator & Important icon */}
-            <div className="flex items-center gap-2 mt-0.5 flex-shrink-0">
+            <div className="flex items-center gap-2 mt-0.5 shrink-0">
               <StatusBadge status={message.status} />
               <ImportantBadge 
                 isImportant={message.isImportant} 
@@ -366,7 +366,7 @@ export const ContactMessagesList = () => {
           {/* Select All & Actions */}
           <div className="flex items-center justify-between gap-4 pb-3 h-[48px]">
             {/* Left: Select All - Fixed width */}
-            <div className="w-[250px] flex items-center gap-2 flex-shrink-0">
+            <div className="w-[250px] flex items-center gap-2 shrink-0">
               <input
                 type="checkbox"
                 checked={isAllSelected()}
@@ -382,7 +382,7 @@ export const ContactMessagesList = () => {
             </div>
 
             {/* Right: Actions - Fixed width container */}
-            <div className="w-[550px] flex justify-end flex-shrink-0">
+            <div className="w-[550px] flex justify-end shrink-0">
               <AnimatePresence>
                 {selectedCount > 0 && (
                   <motion.div

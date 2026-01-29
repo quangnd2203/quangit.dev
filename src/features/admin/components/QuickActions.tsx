@@ -9,7 +9,17 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-const quickActions = [
+type QuickAction = {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  icon: string;
+  color: string;
+  badge?: number;
+};
+
+const quickActions: QuickAction[] = [
   {
     id: 'personal-info',
     title: 'Edit Personal Info',
@@ -50,7 +60,7 @@ export const QuickActions = () => {
   const unreadCount = allMessages.filter(m => m.status === 'unread').length;
   const importantCount = allMessages.filter(m => m.isImportant).length;
 
-  const messageActions = [
+  const messageActions: QuickAction[] = [
     {
       id: 'unread-messages',
       title: 'Unread Messages',
@@ -89,7 +99,7 @@ export const QuickActions = () => {
               href={action.href}
               className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group"
             >
-              <div className={`text-2xl p-2 rounded-lg bg-linear-to-br ${action.color} text-white group-hover:scale-110 transition-transform flex-shrink-0`}>
+              <div className={`text-2xl p-2 rounded-lg bg-linear-to-br ${action.color} text-white group-hover:scale-110 transition-transform shrink-0`}>
                 {action.icon}
               </div>
               <div className="flex-1 min-w-0">
@@ -106,7 +116,7 @@ export const QuickActions = () => {
                 <p className="text-xs text-gray-500 mt-0.5">{action.description}</p>
               </div>
               <svg
-                className="w-4 h-4 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0"
+                className="w-4 h-4 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
