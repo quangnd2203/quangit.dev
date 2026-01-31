@@ -132,7 +132,10 @@ export const ProjectModal = ({
                   </span>
                 </h2>
                 {project.longDescription && (
-                  <p className="mb-6 leading-relaxed text-gray-600">{project.longDescription}</p>
+                  <div
+                    className="project-long-description mb-6 leading-relaxed text-gray-600 prose"
+                    dangerouslySetInnerHTML={{ __html: project.longDescription }}
+                  />
                 )}
 
                 {/* Thumbnail Gallery */}

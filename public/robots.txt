@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Don't index admin and login pages
+Disallow: /dashboard
+Disallow: /login
+
+# Sitemap
+Sitemap: https://quangit.dev/sitemap.xml

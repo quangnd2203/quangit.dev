@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProjectsAdmin } from '../hooks/useProjectsAdmin';
 import { Project, ProjectAsset } from '@/core/entities/Project';
+import { RichTextEditor } from '@/shared/components/ui/RichTextEditor';
 import { cn } from '@/shared/utils/cn';
 
 export const ProjectsForm = () => {
@@ -206,13 +207,11 @@ export const ProjectsForm = () => {
                               <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Long Description
                               </label>
-                              <textarea
+                              <RichTextEditor
                                 value={project.longDescription || ''}
-                                onChange={(e) => handleUpdateProject(project.id, { longDescription: e.target.value })}
+                                onChange={(value) => handleUpdateProject(project.id, { longDescription: value })}
                                 placeholder="Detailed description (optional)"
-                                rows={4}
                                 disabled={saving}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none disabled:bg-gray-100 disabled:cursor-not-allowed resize-y"
                               />
                             </div>
                           </div>
