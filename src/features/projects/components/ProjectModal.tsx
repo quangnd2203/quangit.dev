@@ -1,54 +1,73 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Project } from '@/core/entities/Project';
+import { ImageLightbox } from './ImageLightbox';
 
 interface ProjectModalProps {
   project: Project | null;
   isOpen: boolean;
-  currentImageIndex: number;
   onClose: () => void;
-  onNextImage: () => void;
-  onPrevImage: () => void;
 }
 
 export const ProjectModal = ({
   project,
   isOpen,
-  currentImageIndex,
-  onClose,
-  onNextImage,
-  onPrevImage
+  onClose
 }: ProjectModalProps) => {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowRight') onNextImage();
-      if (e.key === 'ArrowLeft') onPrevImage();
+      if (e.key === 'Escape') {
+        if (lightboxIndex !== null) setLightboxIndex(null);
+        else onClose();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, onNextImage, onPrevImage]);
+  }, [isOpen, onClose, lightboxIndex]);
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = '';
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      setLightboxIndex(null);
+    }
     return () => {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const blockScroll = (e: WheelEvent) => {
+      const target = e.target as HTMLElement;
+      const scrollable = target.closest?.('[data-modal-scroll]') as HTMLElement | null;
+      if (!scrollable) return;
+      const { scrollTop, scrollHeight, clientHeight } = scrollable;
+      const atTop = scrollTop <= 0;
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
+      const scrollingUp = e.deltaY < 0;
+      const scrollingDown = e.deltaY > 0;
+      if ((atTop && scrollingUp) || (atBottom && scrollingDown)) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener('wheel', blockScroll, { passive: false });
+    return () => document.removeEventListener('wheel', blockScroll);
   }, [isOpen]);
 
   if (!project) return null;
 
   const images = [...(project.images ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   const hasGallery = images.length > 0;
-  const currentImage = hasGallery ? images[currentImageIndex] : null;
-
-  const navBtn =
-    'absolute top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/95 shadow-lg ring-1 ring-black/5 transition-all hover:scale-110 hover:bg-white hover:shadow-xl active:scale-95 text-gray-600 hover:text-primary';
 
   return (
     <AnimatePresence>
@@ -59,7 +78,8 @@ export const ProjectModal = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={onClose}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex overflow-hidden items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+          style={{ overscrollBehavior: 'contain' }}
         >
           <motion.div
             role="dialog"
@@ -84,64 +104,27 @@ export const ProjectModal = ({
               </svg>
             </button>
 
-            {/* Gallery / Image section */}
-            {(hasGallery && currentImage) || project.thumbnailUrl ? (
+            {/* Thumbnail - static image only, no carousel */}
+            {(project.thumbnailUrl || (hasGallery && images[0])) ? (
               <div className="relative bg-linear-to-br from-gray-50 to-gray-100">
                 <div className="relative aspect-video max-h-80 w-full overflow-hidden">
                   <Image
-                    src={hasGallery && currentImage ? currentImage.url : project.thumbnailUrl!}
-                    alt={currentImage?.alt ?? project.title}
+                    src={project.thumbnailUrl ?? images[0]!.url}
+                    alt={images[0]?.alt ?? project.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 672px"
                     className="object-contain"
                   />
-                  {hasGallery && images.length > 1 && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onPrevImage();
-                        }}
-                        className={`${navBtn} left-3`}
-                        aria-label="Previous image"
-                      >
-                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onNextImage();
-                        }}
-                        className={`${navBtn} right-3`}
-                        aria-label="Next image"
-                      >
-                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </>
-                  )}
-                </div>
-                {/* Gallery footer: caption + counter */}
-                <div className="flex items-center justify-between gap-4 border-t border-gray-200/80 bg-white/80 px-4 py-3 backdrop-blur-sm">
-                  <p className="truncate text-sm text-gray-600">
-                    {hasGallery && currentImage?.caption ? currentImage.caption : project.title}
-                  </p>
-                  {hasGallery && images.length > 1 && (
-                    <span className="shrink-0 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                      {currentImageIndex + 1} / {images.length}
-                    </span>
-                  )}
                 </div>
               </div>
             ) : null}
 
             {/* Content - scrollable */}
-            <div className="overflow-y-auto max-h-[calc(90vh-12rem)]">
+            <div
+              data-modal-scroll
+              className="overflow-y-scroll max-h-[calc(90vh-12rem)]"
+              style={{ overscrollBehavior: 'contain' }}
+            >
               <div className="p-6 md:p-8">
                 <h2
                   id="project-modal-title"
@@ -153,6 +136,34 @@ export const ProjectModal = ({
                 </h2>
                 {project.longDescription && (
                   <p className="mb-6 leading-relaxed text-gray-600">{project.longDescription}</p>
+                )}
+
+                {/* Thumbnail Gallery */}
+                {hasGallery && (
+                  <div className="mb-6">
+                    <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+                      <span className="h-px w-6 bg-primary" />
+                      Gallery
+                    </h3>
+                    <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-6">
+                      {images.map((img, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => setLightboxIndex(index)}
+                          className="relative aspect-square overflow-hidden rounded-lg border-2 border-gray-200 hover:border-primary/50 transition-all hover:scale-105"
+                        >
+                          <Image
+                            src={img.url}
+                            alt={img.alt ?? `Image ${index + 1}`}
+                            fill
+                            sizes="120px"
+                            className="object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
 
                 {project.achievements && project.achievements.length > 0 && (
@@ -259,6 +270,13 @@ export const ProjectModal = ({
               </div>
             </div>
           </motion.div>
+
+          <ImageLightbox
+            images={images.map((img) => ({ url: img.url, alt: img.alt }))}
+            initialIndex={lightboxIndex ?? 0}
+            isOpen={lightboxIndex !== null}
+            onClose={() => setLightboxIndex(null)}
+          />
         </motion.div>
       )}
     </AnimatePresence>

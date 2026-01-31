@@ -53,11 +53,8 @@ export const ProjectsSection = ({ initialData }: ProjectsSectionProps) => {
   const {
     selectedProject,
     isOpen,
-    currentImageIndex,
     openModal,
-    closeModal,
-    nextImage,
-    prevImage
+    closeModal
   } = useProjectModal();
 
   if (loading) {
@@ -140,10 +137,7 @@ export const ProjectsSection = ({ initialData }: ProjectsSectionProps) => {
       <ProjectModal
         project={selectedProject}
         isOpen={isOpen}
-        currentImageIndex={currentImageIndex}
         onClose={closeModal}
-        onNextImage={nextImage}
-        onPrevImage={prevImage}
       />
     </>
   );
