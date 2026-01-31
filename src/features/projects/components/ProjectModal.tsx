@@ -143,22 +143,34 @@ export const ProjectModal = ({
                       Gallery
                     </h3>
                     <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-6">
-                      {images.map((img, index) => (
-                        <button
-                          key={index}
-                          type="button"
-                          onClick={() => setLightboxIndex(index)}
-                          className="relative aspect-square overflow-hidden rounded-lg border-2 border-gray-200 hover:border-primary/50 transition-all hover:scale-105"
-                        >
-                          <Image
-                            src={img.url}
-                            alt={img.alt ?? `Image ${index + 1}`}
-                            fill
-                            sizes="120px"
-                            className="object-cover"
-                          />
-                        </button>
-                      ))}
+                      {images.map((asset, index) => {
+                        const assetType = asset.type ?? 'image';
+                        return (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => setLightboxIndex(index)}
+                            className="relative aspect-square overflow-hidden rounded-lg border-2 border-gray-200 hover:border-primary/50 transition-all hover:scale-105"
+                          >
+                            <Image
+                              src={asset.url}
+                              alt={asset.alt ?? `${assetType === 'video' ? 'Video' : 'Image'} ${index + 1}`}
+                              fill
+                              sizes="120px"
+                              className="object-cover"
+                            />
+                            {assetType === 'video' && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/95 shadow-lg">
+                                  <svg className="h-6 w-6 text-primary ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                </div>
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -280,7 +292,7 @@ export const ProjectModal = ({
           </motion.div>
 
           <ImageLightbox
-            images={images.map((img) => ({ url: img.url, alt: img.alt }))}
+            images={images.map((asset) => ({ type: asset.type, url: asset.url, alt: asset.alt }))}
             initialIndex={lightboxIndex ?? 0}
             isOpen={lightboxIndex !== null}
             onClose={() => setLightboxIndex(null)}

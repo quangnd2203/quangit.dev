@@ -1,9 +1,16 @@
-export interface ProjectImage {
-  url: string;                          // Image URL
-  alt?: string;                          // Alt text for accessibility
-  caption?: string;                     // Image caption (optional)
-  order?: number;                        // Display order
+export type AssetType = 'image' | 'video';
+
+export interface ProjectAsset {
+  type?: AssetType;                     // 'image' or 'video' (optional for backward compatibility)
+  url: string;                          // Google Drive URL
+  alt?: string;                         // Alt text for accessibility
+  caption?: string;                     // Caption/description
+  order?: number;                       // Display order
+  thumbnailUrl?: string;                // Video thumbnail (auto from Google Drive)
 }
+
+// Keep old interface name for backward compatibility
+export interface ProjectImage extends ProjectAsset {}
 
 export interface Project {
   id: string;                          // Unique identifier
@@ -12,7 +19,7 @@ export interface Project {
   longDescription?: string;             // Detailed description
   technologies: string[];               // Tech stack
   thumbnailUrl?: string;                // Main thumbnail image (for cards/list)
-  images?: ProjectImage[];              // Multiple project images (gallery)
+  images?: ProjectAsset[];              // Multiple project assets (images/videos)
   githubUrl?: string;                   // GitHub repository link
   demoUrl?: string;                     // Live demo link
   achievements?: string[];              // Key achievements/results

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Project, ProjectImage } from '@/core/entities/Project';
+import { Project, ProjectAsset } from '@/core/entities/Project';
 
 export const useProjectsAdmin = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -143,7 +143,7 @@ export const useProjectsAdmin = () => {
         proj.id === projectId
           ? {
               ...proj,
-              images: [...(proj.images || []), { url: '', order: (proj.images?.length || 0) }],
+              images: [...(proj.images || []), { type: 'image', url: '', order: (proj.images?.length || 0) }],
             }
           : proj
       )
@@ -152,7 +152,7 @@ export const useProjectsAdmin = () => {
     if (success) setSuccess(false);
   };
 
-  const handleUpdateImage = (projectId: string, imageIndex: number, updates: Partial<ProjectImage>) => {
+  const handleUpdateImage = (projectId: string, imageIndex: number, updates: Partial<ProjectAsset>) => {
     setProjects(prev =>
       prev.map(proj =>
         proj.id === projectId

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProjectsAdmin } from '../hooks/useProjectsAdmin';
-import { Project, ProjectImage } from '@/core/entities/Project';
+import { Project, ProjectAsset } from '@/core/entities/Project';
 import { cn } from '@/shared/utils/cn';
 
 export const ProjectsForm = () => {
@@ -308,17 +308,17 @@ export const ProjectsForm = () => {
                             </div>
                           </div>
 
-                          {/* Images Section */}
+                          {/* Media/Gallery Section */}
                           <div className="space-y-3 pt-4 border-t border-gray-200">
                             <div className="flex items-center justify-between">
-                              <h3 className="text-lg font-semibold text-gray-900">Images</h3>
+                              <h3 className="text-lg font-semibold text-gray-900">Media Gallery</h3>
                               <button
                                 type="button"
                                 onClick={() => handleAddImage(project.id)}
                                 disabled={saving}
                                 className="px-3 py-1.5 text-sm font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                               >
-                                + Add Image
+                                + Add Media
                               </button>
                             </div>
 
@@ -329,75 +329,99 @@ export const ProjectsForm = () => {
                             )}
 
                             <div className="space-y-3">
-                              {project.images?.map((image, imageIndex) => (
-                                <div key={imageIndex} className="p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2">
-                                  <div>
-                                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                                      Image URL *
-                                    </label>
-                                    <input
-                                      type="text"
-                                      value={image.url}
-                                      onChange={(e) => handleUpdateImage(project.id, imageIndex, { url: e.target.value })}
-                                      placeholder="Image URL"
-                                      required
-                                      disabled={saving}
-                                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none disabled:bg-white disabled:cursor-not-allowed"
-                                    />
-                                  </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                              {project.images?.map((asset, imageIndex) => {
+                                const assetType = asset.type ?? 'image';
+                                return (
+                                  <div key={imageIndex} className="p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2">
                                     <div>
                                       <label className="block text-xs font-medium text-gray-700 mb-1">
-                                        Alt Text
+                                        Type *
+                                      </label>
+                                      <select
+                                        value={assetType}
+                                        onChange={(e) => handleUpdateImage(project.id, imageIndex, { type: e.target.value as 'image' | 'video' })}
+                                        disabled={saving}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none disabled:bg-white disabled:cursor-not-allowed"
+                                      >
+                                        <option value="image">Image</option>
+                                        <option value="video">Video</option>
+                                      </select>
+                                    </div>
+                                    <div>
+                                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                                        {assetType === 'video' ? 'Video' : 'Image'} URL *
                                       </label>
                                       <input
                                         type="text"
-                                        value={image.alt || ''}
-                                        onChange={(e) => handleUpdateImage(project.id, imageIndex, { alt: e.target.value })}
-                                        placeholder="Alt text"
+                                        value={asset.url}
+                                        onChange={(e) => handleUpdateImage(project.id, imageIndex, { url: e.target.value })}
+                                        placeholder={assetType === 'video' ? 'Paste Google Drive video link (e.g., https://drive.google.com/file/d/...)' : 'Paste Google Drive image link'}
+                                        required
                                         disabled={saving}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none disabled:bg-white disabled:cursor-not-allowed"
                                       />
+                                      {assetType === 'video' && (
+                                        <p className="mt-1 text-xs text-gray-500">
+                                          Paste the full Google Drive link. Example: https://drive.google.com/file/d/FILE_ID/view
+                                        </p>
+                                      )}
                                     </div>
-                                    <div>
-                                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                                        Caption
-                                      </label>
-                                      <input
-                                        type="text"
-                                        value={image.caption || ''}
-                                        onChange={(e) => handleUpdateImage(project.id, imageIndex, { caption: e.target.value })}
-                                        placeholder="Caption"
-                                        disabled={saving}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none disabled:bg-white disabled:cursor-not-allowed"
-                                      />
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                      {assetType === 'image' && (
+                                        <div>
+                                          <label className="block text-xs font-medium text-gray-700 mb-1">
+                                            Alt Text
+                                          </label>
+                                          <input
+                                            type="text"
+                                            value={asset.alt || ''}
+                                            onChange={(e) => handleUpdateImage(project.id, imageIndex, { alt: e.target.value })}
+                                            placeholder="Alt text"
+                                            disabled={saving}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none disabled:bg-white disabled:cursor-not-allowed"
+                                          />
+                                        </div>
+                                      )}
+                                      <div className={assetType === 'image' ? '' : 'md:col-span-2'}>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                                          Caption
+                                        </label>
+                                        <input
+                                          type="text"
+                                          value={asset.caption || ''}
+                                          onChange={(e) => handleUpdateImage(project.id, imageIndex, { caption: e.target.value })}
+                                          placeholder="Caption"
+                                          disabled={saving}
+                                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none disabled:bg-white disabled:cursor-not-allowed"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                                          Order
+                                        </label>
+                                        <input
+                                          type="number"
+                                          value={asset.order ?? imageIndex}
+                                          onChange={(e) => handleUpdateImage(project.id, imageIndex, { order: parseInt(e.target.value) || 0 })}
+                                          min="0"
+                                          disabled={saving}
+                                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none disabled:bg-white disabled:cursor-not-allowed"
+                                        />
+                                      </div>
                                     </div>
-                                    <div>
-                                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                                        Order
-                                      </label>
-                                      <input
-                                        type="number"
-                                        value={image.order ?? imageIndex}
-                                        onChange={(e) => handleUpdateImage(project.id, imageIndex, { order: parseInt(e.target.value) || 0 })}
-                                        min="0"
+                                    <div className="flex justify-end pt-2 border-t border-gray-200">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteImage(project.id, imageIndex)}
                                         disabled={saving}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none disabled:bg-white disabled:cursor-not-allowed"
-                                      />
+                                        className="px-3 py-1.5 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                      >
+                                        Remove {assetType === 'video' ? 'Video' : 'Image'}
+                                      </button>
                                     </div>
                                   </div>
-                                  <div className="flex justify-end pt-2 border-t border-gray-200">
-                                    <button
-                                      type="button"
-                                      onClick={() => handleDeleteImage(project.id, imageIndex)}
-                                      disabled={saving}
-                                      className="px-3 py-1.5 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                      Remove Image
-                                    </button>
-                                  </div>
-                                </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           </div>
 

@@ -4,14 +4,19 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AssetType } from '@/core/entities/Project';
 
-export interface LightboxImage {
+export interface LightboxAsset {
+  type?: AssetType;
   url: string;
   alt?: string;
 }
 
+// Keep old interface for backward compatibility
+export interface LightboxImage extends LightboxAsset {}
+
 interface ImageLightboxProps {
-  images: LightboxImage[];
+  images: LightboxAsset[];
   initialIndex: number;
   isOpen: boolean;
   onClose: () => void;
@@ -19,6 +24,14 @@ interface ImageLightboxProps {
 
 const navBtn =
   'absolute top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/95 shadow-lg ring-1 ring-black/5 transition-all hover:scale-110 hover:bg-white hover:shadow-xl active:scale-95 text-gray-600 hover:text-primary';
+
+// Helper function to convert Google Drive URL to embed URL
+const getVideoEmbedUrl = (driveUrl: string): string => {
+  // Extract file ID from drive.google.com/file/d/{ID}/view
+  const match = driveUrl.match(/\/d\/([^/]+)/);
+  const fileId = match?.[1];
+  return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : driveUrl;
+};
 
 export const ImageLightbox = ({ images, initialIndex, isOpen, onClose }: ImageLightboxProps) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -46,7 +59,8 @@ export const ImageLightbox = ({ images, initialIndex, isOpen, onClose }: ImageLi
 
   if (!isOpen || images.length === 0) return null;
 
-  const currentImage = images[currentIndex]!;
+  const currentAsset = images[currentIndex]!;
+  const assetType = currentAsset.type ?? 'image';
 
   const content = (
     <AnimatePresence>
@@ -88,7 +102,7 @@ export const ImageLightbox = ({ images, initialIndex, isOpen, onClose }: ImageLi
               setCurrentIndex((i) => (i === 0 ? images.length - 1 : i - 1));
             }}
             className={`${navBtn} left-4`}
-            aria-label="Previous image"
+            aria-label="Previous"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -96,19 +110,30 @@ export const ImageLightbox = ({ images, initialIndex, isOpen, onClose }: ImageLi
           </button>
         )}
 
-        {/* Image */}
+        {/* Media Content - Image or Video */}
         <div
           className="relative max-w-7xl max-h-[85vh] w-full h-full"
           onClick={(e) => e.stopPropagation()}
         >
-          <Image
-            key={currentIndex}
-            src={currentImage.url}
-            alt={currentImage.alt ?? `Image ${currentIndex + 1}`}
-            fill
-            className="object-contain"
-            sizes="100vw"
-          />
+          {assetType === 'video' ? (
+            <iframe
+              key={currentIndex}
+              src={getVideoEmbedUrl(currentAsset.url)}
+              className="w-full h-full rounded-lg"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              title={currentAsset.alt ?? `Video ${currentIndex + 1}`}
+            />
+          ) : (
+            <Image
+              key={currentIndex}
+              src={currentAsset.url}
+              alt={currentAsset.alt ?? `Image ${currentIndex + 1}`}
+              fill
+              className="object-contain"
+              sizes="100vw"
+            />
+          )}
         </div>
 
         {/* Next button */}
@@ -120,7 +145,7 @@ export const ImageLightbox = ({ images, initialIndex, isOpen, onClose }: ImageLi
               setCurrentIndex((i) => (i + 1) % images.length);
             }}
             className={`${navBtn} right-4`}
-            aria-label="Next image"
+            aria-label="Next"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
