@@ -16,7 +16,12 @@ export const GET = async () => {
       );
     }
 
-    return NextResponse.json(skills, { status: 200 });
+    return NextResponse.json(skills, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, no-cache, must-revalidate',
+      }
+    });
   } catch (error) {
     console.error('Get skills error:', error);
     return NextResponse.json(

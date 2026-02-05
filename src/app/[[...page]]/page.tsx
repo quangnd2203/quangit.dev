@@ -27,24 +27,16 @@ const CatchAllPage = async ({ params }: PageProps) => {
     return <NotFound />;
   }
 
-  // Fetch all data on the server in parallel
-  const [personalInfo, skills, experiences, projects] = await Promise.all([
-    getPersonalInfo(),
-    getSkills(),
-    getExperiences(),
-    getProjects()
-  ]);
-
   return (
     <>
       <ScrollManager target={target} />
       <Header />
       <main className="min-h-screen">
-        <HomeSection initialData={personalInfo} />
-        <SkillsSection initialData={skills} />
-        <ExperienceSection initialData={experiences} />
-        <ProjectsSection initialData={projects} />
-        <ContactSection initialData={personalInfo} />
+        <HomeSection />
+        <SkillsSection />
+        <ExperienceSection />
+        <ProjectsSection />
+        <ContactSection />
       </main>
       <Footer />
     </>

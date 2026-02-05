@@ -16,7 +16,12 @@ export const GET = async () => {
       );
     }
 
-    return NextResponse.json(projects, { status: 200 });
+    return NextResponse.json(projects, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, no-cache, must-revalidate',
+      }
+    });
   } catch (error) {
     console.error('Get projects error:', error);
     return NextResponse.json(

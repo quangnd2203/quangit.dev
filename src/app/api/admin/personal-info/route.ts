@@ -16,7 +16,12 @@ export const GET = async () => {
       );
     }
 
-    return NextResponse.json(personalInfo, { status: 200 });
+    return NextResponse.json(personalInfo, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, no-cache, must-revalidate',
+      }
+    });
   } catch (error) {
     console.error('Get personal info error:', error);
     return NextResponse.json(
