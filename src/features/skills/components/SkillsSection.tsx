@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useSkills } from '../hooks/useSkills';
 import { cn } from '@/shared/utils/cn';
+import { useData } from '@/shared/context/DataProvider';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -53,14 +54,9 @@ const getProficiencyColor = (level: string) => {
     }
 };
 
-import { SkillCategory } from '@/core/entities/SkillCategory';
 
-interface SkillsSectionProps {
-    initialData?: SkillCategory[] | null;
-}
-
-export const SkillsSection = ({ initialData }: SkillsSectionProps) => {
-    const { categories, loading, error } = useSkills(initialData || undefined);
+export const SkillsSection = () => {
+    const { categories, loading, error } = useData().skills;
 
     if (loading) {
         return (

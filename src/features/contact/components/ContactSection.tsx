@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useContactForm } from '../hooks/useContactForm';
-import { useHome } from '@/features/home/hooks/useHome';
+import { useData } from '@/shared/context/DataProvider';
 
 const headerVariants = {
     hidden: { opacity: 0, y: -20 },
@@ -58,15 +58,9 @@ const messageVariants = {
     exit: { opacity: 0, y: -10 },
 };
 
-import { PersonalInfo } from '@/core/entities/PersonalInfo';
-
-interface ContactSectionProps {
-    initialData?: PersonalInfo | null;
-}
-
-export const ContactSection = ({ initialData }: ContactSectionProps) => {
+export const ContactSection = () => {
     const { formData, loading, error, success, handleChange, handleSubmit } = useContactForm();
-    const { personalInfo } = useHome(initialData);
+    const { personalInfo } = useData().home;
 
     // Build contactInfo dynamically from personalInfo
     const contactInfo = useMemo(() => {
@@ -80,21 +74,21 @@ export const ContactSection = ({ initialData }: ContactSectionProps) => {
             href?: string;
             external?: boolean;
         }> = [
-            {
-                id: 'email',
-                icon: '📧',
-                label: 'Email',
-                value: personalInfo.contact.email,
-                href: `mailto:${personalInfo.contact.email}`,
-            },
-            {
-                id: 'phone',
-                icon: '📱',
-                label: 'Phone',
-                value: personalInfo.contact.phone,
-                href: `tel:${personalInfo.contact.phone.replace(/\s/g, '')}`,
-            },
-        ];
+                {
+                    id: 'email',
+                    icon: '📧',
+                    label: 'Email',
+                    value: personalInfo.contact.email,
+                    href: `mailto:${personalInfo.contact.email}`,
+                },
+                {
+                    id: 'phone',
+                    icon: '📱',
+                    label: 'Phone',
+                    value: personalInfo.contact.phone,
+                    href: `tel:${personalInfo.contact.phone.replace(/\s/g, '')}`,
+                },
+            ];
 
         // Add optional contact fields if they exist
         if (personalInfo.contact.github) {
@@ -158,7 +152,6 @@ export const ContactSection = ({ initialData }: ContactSectionProps) => {
                 value: personalInfo.location,
             });
         }
-
         return items;
     }, [personalInfo]);
 
@@ -167,7 +160,7 @@ export const ContactSection = ({ initialData }: ContactSectionProps) => {
             id="contact"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
+            viewport={{ margin: '-100px' }}
             className="py-24 bg-white"
         >
             <div className="container-custom">
@@ -186,7 +179,12 @@ export const ContactSection = ({ initialData }: ContactSectionProps) => {
                 <div>
                     <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-12 lg:gap-16">
                         {/* Left: Contact Info */}
-                        <motion.div variants={leftContainerVariants} className="space-y-6">
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={leftContainerVariants}
+                            className="space-y-6"
+                        >
                             <motion.div variants={leftItemVariants} className="mb-8">
                                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                                     Let&apos;s Connect

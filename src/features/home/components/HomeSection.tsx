@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useHome } from '../hooks/useHome';
 import { cn } from '@/shared/utils/cn';
+import { useData } from '@/shared/context/DataProvider';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -59,14 +59,8 @@ const scrollToSection = (sectionId: string) => {
     }
 };
 
-import { PersonalInfo } from '@/core/entities/PersonalInfo';
-
-interface HomeSectionProps {
-    initialData?: PersonalInfo | null;
-}
-
-export const HomeSection = ({ initialData }: HomeSectionProps) => {
-    const { personalInfo, loading, error } = useHome(initialData);
+export const HomeSection = () => {
+    const { personalInfo, loading, error } = useData().home;
 
     if (loading) {
         return (
@@ -240,7 +234,7 @@ export const HomeSection = ({ initialData }: HomeSectionProps) => {
                                 onClick={() =>
                                     window.open(
                                         personalInfo.resumeUrl ||
-                                            `https://${personalInfo.contact.website}`,
+                                        `https://${personalInfo.contact.website}`,
                                         '_blank'
                                     )
                                 }

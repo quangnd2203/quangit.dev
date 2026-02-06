@@ -5,6 +5,7 @@ import { useProjects } from '../hooks/useProjects';
 import { useProjectModal } from '../hooks/useProjectModal';
 import { ProjectCard } from './ProjectCard';
 import { ProjectModal } from './ProjectModal';
+import { useData } from '@/shared/context/DataProvider';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -42,14 +43,8 @@ const headerVariants = {
     },
 };
 
-import { Project } from '@/core/entities/Project';
-
-interface ProjectsSectionProps {
-    initialData?: Project[] | null;
-}
-
-export const ProjectsSection = ({ initialData }: ProjectsSectionProps) => {
-    const { projects, loading, error } = useProjects(initialData || undefined);
+export const ProjectsSection = () => {
+    const { projects, loading, error } = useData().projects;
     const { selectedProject, isOpen, openModal, closeModal } = useProjectModal();
 
     if (loading) {

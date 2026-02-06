@@ -1,7 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useExperience } from '../hooks/useExperience';
+import { useData } from '@/shared/context/DataProvider';
+import { Experience } from '@/core/entities/Experience';
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -39,14 +40,8 @@ const headerVariants = {
     },
 };
 
-import { Experience } from '@/core/entities/Experience';
-
-interface ExperienceSectionProps {
-    initialData?: Experience[] | null;
-}
-
-export const ExperienceSection = ({ initialData }: ExperienceSectionProps) => {
-    const { experiences, loading, error } = useExperience(initialData || undefined);
+export const ExperienceSection = () => {
+    const { experiences, loading, error } = useData().experience;
 
     if (loading) {
         return (

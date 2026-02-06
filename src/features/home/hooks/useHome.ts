@@ -15,7 +15,6 @@ export const useHome = (initialData?: PersonalInfo | null) => {
         const loadData = async () => {
             setLoading(true);
             setError(null);
-
             try {
                 const repository = new PersonalInfoRepository();
                 const useCase = new GetPersonalInfo(repository);
