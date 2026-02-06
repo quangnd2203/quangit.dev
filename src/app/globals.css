@@ -1,122 +1,122 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Custom theme variables (optional) */
 @theme inline {
-  /* Colors */
-  --color-primary: #3b82f6;
-  --color-primary-dark: #1e40af;
-  --color-accent: #10b981;
-  --color-accent-dark: #059669;
-  --color-accent-light: #06b6d4;
-  
-  /* Spacing */
-  --container-max-width: 1280px;
-  --font-sans: var(--font-inter);
+    /* Colors */
+    --color-primary: #3b82f6;
+    --color-primary-dark: #1e40af;
+    --color-accent: #10b981;
+    --color-accent-dark: #059669;
+    --color-accent-light: #06b6d4;
+
+    /* Spacing */
+    --container-max-width: 1280px;
+    --font-sans: var(--font-inter);
 }
 
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 body {
-  color: #111827;
-  background-color: #ffffff;
+    color: #111827;
+    background-color: #ffffff;
 }
 
 /* Custom utilities */
 .container-custom {
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 @media (min-width: 768px) {
-  .container-custom {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
+    .container-custom {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
 }
 
 @media (min-width: 1024px) {
-  .container-custom {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
+    .container-custom {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
 }
 
 /* Rich text content styling */
 .prose {
-  color: inherit;
+    color: inherit;
 }
 
 .prose p {
-  margin-bottom: 1rem;
-  line-height: 1.75;
+    margin-bottom: 1rem;
+    line-height: 1.75;
 }
 
 .prose p:last-child {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .prose h1,
 .prose h2,
 .prose h3 {
-  font-weight: 700;
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  line-height: 1.25;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.25;
 }
 
 .prose h1 {
-  font-size: 2rem;
+    font-size: 2rem;
 }
 
 .prose h2 {
-  font-size: 1.5rem;
+    font-size: 1.5rem;
 }
 
 .prose h3 {
-  font-size: 1.25rem;
+    font-size: 1.25rem;
 }
 
 .prose ul,
 .prose ol {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  padding-left: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
 }
 
 .prose ul {
-  list-style-type: disc;
+    list-style-type: disc;
 }
 
 .prose ol {
-  list-style-type: decimal;
+    list-style-type: decimal;
 }
 
 .prose li {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .prose a {
-  color: #3b82f6;
-  text-decoration: underline;
+    color: #3b82f6;
+    text-decoration: underline;
 }
 
 .prose a:hover {
-  color: #1e40af;
+    color: #1e40af;
 }
 
 .prose strong {
-  font-weight: 700;
+    font-weight: 700;
 }
 
 .prose em {
-  font-style: italic;
+    font-style: italic;
 }
 
 .prose u {
-  text-decoration: underline;
+    text-decoration: underline;
 }

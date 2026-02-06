@@ -1,7 +1,7 @@
 import { Dashboard } from '@/features/admin/components/Dashboard';
 
 const DashboardPage = () => {
-  return <Dashboard />;
+    return <Dashboard />;
 };
 
 export default DashboardPage;

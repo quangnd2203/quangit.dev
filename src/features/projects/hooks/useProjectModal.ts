@@ -2,21 +2,21 @@ import { useState } from 'react';
 import { Project } from '@/core/entities/Project';
 
 export const useProjectModal = () => {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const isOpen = selectedProject !== null;
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const isOpen = selectedProject !== null;
 
-  const openModal = (project: Project) => {
-    setSelectedProject(project);
-  };
+    const openModal = (project: Project) => {
+        setSelectedProject(project);
+    };
 
-  const closeModal = () => {
-    setSelectedProject(null);
-  };
+    const closeModal = () => {
+        setSelectedProject(null);
+    };
 
-  return {
-    selectedProject,
-    isOpen,
-    openModal,
-    closeModal
-  };
+    return {
+        selectedProject,
+        isOpen,
+        openModal,
+        closeModal,
+    };
 };

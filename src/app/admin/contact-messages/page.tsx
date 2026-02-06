@@ -1,7 +1,7 @@
 import { ContactMessagesList } from '@/features/admin/components/ContactMessagesList';
 
 const ContactMessagesPage = () => {
-  return <ContactMessagesList />;
+    return <ContactMessagesList />;
 };
 
 export default ContactMessagesPage;

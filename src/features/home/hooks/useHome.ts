@@ -4,33 +4,33 @@ import { PersonalInfoRepository } from '@/infrastructure/repositories/PersonalIn
 import { PersonalInfo } from '@/core/entities/PersonalInfo';
 
 export const useHome = (initialData?: PersonalInfo | null) => {
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(initialData || null);
-  const [loading, setLoading] = useState(!initialData);
-  const [error, setError] = useState<string | null>(null);
+    const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(initialData || null);
+    const [loading, setLoading] = useState(!initialData);
+    const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // If we already have initial data, don't need to load
-    if (initialData) return;
+    useEffect(() => {
+        // If we already have initial data, don't need to load
+        if (initialData) return;
 
-    const loadData = async () => {
-      setLoading(true);
-      setError(null);
+        const loadData = async () => {
+            setLoading(true);
+            setError(null);
 
-      try {
-        const repository = new PersonalInfoRepository();
-        const useCase = new GetPersonalInfo(repository);
-        const data = await useCase.execute();
-        setPersonalInfo(data);
-      } catch (err) {
-        setError('Failed to load personal info');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+            try {
+                const repository = new PersonalInfoRepository();
+                const useCase = new GetPersonalInfo(repository);
+                const data = await useCase.execute();
+                setPersonalInfo(data);
+            } catch (err) {
+                setError('Failed to load personal info');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    loadData();
-  }, [initialData]);
+        loadData();
+    }, [initialData]);
 
-  return { personalInfo, loading, error };
+    return { personalInfo, loading, error };
 };

@@ -5,10 +5,7 @@ import crypto from 'crypto';
  * Generate a simple ETag based on the content string
  */
 export const generateETag = (content: string): string => {
-    return crypto
-        .createHash('sha1')
-        .update(content)
-        .digest('hex');
+    return crypto.createHash('sha1').update(content).digest('hex');
 };
 
 /**
@@ -26,7 +23,7 @@ export const validateETag = (request: Request, etag: string): NextResponse | nul
         return new NextResponse(null, {
             status: 304,
             headers: {
-                'ETag': `"${normalizedETag}"`,
+                ETag: `"${normalizedETag}"`,
                 'Cache-Control': 'public, no-cache, must-revalidate',
             },
         });

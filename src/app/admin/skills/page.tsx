@@ -1,7 +1,7 @@
 import { SkillsForm } from '@/features/admin/components/SkillsForm';
 
 const SkillsPage = () => {
-  return <SkillsForm />;
+    return <SkillsForm />;
 };
 
 export default SkillsPage;

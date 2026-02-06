@@ -4,32 +4,32 @@ import { ExperienceRepository } from '@/infrastructure/repositories/ExperienceRe
 import { Experience } from '@/core/entities/Experience';
 
 export const useExperience = (initialData?: Experience[]) => {
-  const [experiences, setExperiences] = useState<Experience[]>(initialData || []);
-  const [loading, setLoading] = useState(!initialData);
-  const [error, setError] = useState<string | null>(null);
+    const [experiences, setExperiences] = useState<Experience[]>(initialData || []);
+    const [loading, setLoading] = useState(!initialData);
+    const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (initialData) return;
+    useEffect(() => {
+        if (initialData) return;
 
-    const loadData = async () => {
-      setLoading(true);
-      setError(null);
+        const loadData = async () => {
+            setLoading(true);
+            setError(null);
 
-      try {
-        const repository = new ExperienceRepository();
-        const useCase = new GetExperiences(repository);
-        const data = await useCase.execute();
-        setExperiences(data);
-      } catch (err) {
-        setError('Failed to load experiences');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+            try {
+                const repository = new ExperienceRepository();
+                const useCase = new GetExperiences(repository);
+                const data = await useCase.execute();
+                setExperiences(data);
+            } catch (err) {
+                setError('Failed to load experiences');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    loadData();
-  }, [initialData]);
+        loadData();
+    }, [initialData]);
 
-  return { experiences, loading, error };
+    return { experiences, loading, error };
 };

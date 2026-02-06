@@ -13,34 +13,34 @@ import { getExperiences } from '@/server/api/admin/experiences';
 import { getProjects } from '@/server/api/admin/projects';
 
 interface PageProps {
-  params: {
-    page?: string[];
-  };
+    params: {
+        page?: string[];
+    };
 }
 
 const CatchAllPage = async ({ params }: PageProps) => {
-  const slug = params?.page;
-  const target = slug?.[0];
-  const validTargets = Object.values(SECTION_IDS) as string[];
+    const slug = params?.page;
+    const target = slug?.[0];
+    const validTargets = Object.values(SECTION_IDS) as string[];
 
-  if (target && !validTargets.includes(target)) {
-    return <NotFound />;
-  }
+    if (target && !validTargets.includes(target)) {
+        return <NotFound />;
+    }
 
-  return (
-    <>
-      <ScrollManager target={target} />
-      <Header />
-      <main className="min-h-screen">
-        <HomeSection />
-        <SkillsSection />
-        <ExperienceSection />
-        <ProjectsSection />
-        <ContactSection />
-      </main>
-      <Footer />
-    </>
-  );
+    return (
+        <>
+            <ScrollManager target={target} />
+            <Header />
+            <main className="min-h-screen">
+                <HomeSection />
+                <SkillsSection />
+                <ExperienceSection />
+                <ProjectsSection />
+                <ContactSection />
+            </main>
+            <Footer />
+        </>
+    );
 };
 
 export default CatchAllPage;

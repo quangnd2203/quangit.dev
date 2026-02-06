@@ -12,7 +12,7 @@ export const ScrollManager = ({ target }: ScrollManagerProps) => {
 
         const timer = window.setTimeout(() => {
             const el = document.getElementById(target);
-            el?.scrollIntoView({ behavior: "smooth", block: "start" });
+            el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 1000);
 
         return () => window.clearTimeout(timer);
