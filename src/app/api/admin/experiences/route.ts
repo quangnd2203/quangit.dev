@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getExperiences, updateExperiences } from '@/server/api/admin/experiences';
 import { verifyAuth } from '@/server/api/middleware';
+import { generateETag, validateETag } from '@/server/utils/cache';
 
 export const dynamic = 'force-dynamic';
 
-export const GET = async () => {
+export const GET = async (request: Request) => {
   try {
     // Get experiences (no auth check - public endpoint)
     const experiences = await getExperiences();
@@ -16,10 +17,15 @@ export const GET = async () => {
       );
     }
 
+    const etag = generateETag(JSON.stringify(experiences));
+    const validationResponse = validateETag(request, etag);
+    if (validationResponse) return validationResponse;
+
     return NextResponse.json(experiences, {
       status: 200,
       headers: {
         'Cache-Control': 'public, no-cache, must-revalidate',
+        'ETag': `"${etag}"`,
       }
     });
   } catch (error) {
