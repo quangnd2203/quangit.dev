@@ -32,10 +32,8 @@ const inter = Inter({
 });
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
-    <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.variable} antialiased`} suppressHydrationWarning>
-            {children}
-        </body>
+    <html lang="en">
+        <body className={`${inter.variable} antialiased`}>{children}</body>
     </html>
 );
 
