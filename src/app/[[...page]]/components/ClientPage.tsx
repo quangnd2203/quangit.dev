@@ -6,10 +6,15 @@ import { SkillsSection } from "@/features/skills";
 import { ExperienceSection } from "@/features/experience";
 import { ProjectsSection } from "@/features/projects";
 import { ContactSection } from "@/features/contact";
+import type { InitialData } from '../page';
 
-const ClientPage = () => {
+interface ClientPageProps {
+    initialData: InitialData;
+}
+
+const ClientPage = ({ initialData }: ClientPageProps) => {
     return (
-        <DataProvider>
+        <DataProvider initialData={initialData}>
             <HomeSection />
             <SkillsSection />
             <ExperienceSection />
